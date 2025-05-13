@@ -8,13 +8,14 @@
   <link rel="manifest" href="manifest.json">
   <style>
     body { font-family: sans-serif; text-align: center; padding: 2em; }
-    #installBtn { padding: 1em 2em; font-size: 1rem; display: ; background: #3367D6; color: white; border: none; border-radius: 6px; }
+    #installBtn { padding: 1em 2em; font-size: 1rem; background: #3367D6; color: white; border: none; border-radius: 6px; }
     #installedMsg { display: none; color: green; font-size: 1.2em; }
   </style>
 </head>
 <body>
   <h1 id="title">Welcome to My PWA</h1>
-  <button id="installBtn">Install This App</button>
+  <button onmousedown="deferredPrompt.prompt()" id="installBtn">
+    Install This App</button>
   <p id="installedMsg">App is installed!</p>
 
   <script>
@@ -23,23 +24,12 @@
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      document.getElementById('installBtn').style.display = 'inline-block';
+ 
     });
 
-    document.getElementById('installBtn').addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const result = await deferredPrompt.userChoice;
-        if (result.outcome === 'accepted') {
-          
-          document.getElementById('installedMsg').style.display = 'block';
-        }
-        deferredPrompt = null;
-      }
-    });
+    
 
-    // Detect if app is running in standalone mode
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+  if (window.matchMedia('(display-mode: standalone)').matches) {
       document.getElementById('title').innerText = 'Welcome Back!';
       document.getElementById('installedMsg').style.display = 'block';
     }
