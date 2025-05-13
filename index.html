@@ -2,37 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Simple PWA</title>
+  <title>Real PWA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#3367D6">
   <link rel="manifest" href="manifest.json">
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 2em; }
-    #installBtn { padding: 1em 2em; font-size: 1rem; background: #3367D6; color: white; border: none; border-radius: 6px; }
-    #installedMsg { display: none; color: green; font-size: 1.2em; }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2em;
+    }
+    button {
+      padding: 1em 2em;
+      font-size: 1rem;
+      background: #3367D6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      margin-top: 1em;
+    }
+    main {
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <h1 id="title">Welcome to My PWA</h1>
-  <button onmousedown="deferredPrompt.prompt()" id="installBtn">
-    Install This App</button>
-  <p id="installedMsg">App is installed!</p>
+
+  <install>
+    <h1>Install This App</h1>
+    <button onmousedown="handleInstall()">Install</button>
+  </install>
+
+  <main>
+    <h1>You’re Inside the App</h1>
+    <p>This is the standalone mode.</p>
+  </main>
 
   <script>
     let deferredPrompt;
 
+    function handleInstall() {
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        document.querySelector('install').style.display = 'none';
+        document.querySelector('main').style.display = 'block';
+        return;
+      }
+
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+      }
+    }
+
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
- 
+      document.querySelector('install').style.display = 'block';
     });
 
-    
-
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-      document.getElementById('title').innerText = 'Welcome Back!';
-      document.getElementById('installedMsg').style.display = 'block';
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      document.querySelector('install').style.display = 'none';
+      document.querySelector('main').style.display = 'block';
     }
   </script>
+
 </body>
 </html>
