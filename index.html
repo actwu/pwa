@@ -61,16 +61,19 @@ e.preventDefault();
 deferredPrompt = e;
 installEl.style.display = 'block';
 });
-if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+window.addEventListener('appinstalled', () => {
+localStorage.setItem('pwaInstalled', 'true');
+actionBtn.textContent = 'Open';
+title.textContent = 'Open the App';
+});
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+const isInstalled = localStorage.getItem('pwaInstalled') === 'true';
+if (isStandalone) {
 installEl.style.display = 'none';
 mainEl.style.display = 'block';
 } else {
 installEl.style.display = 'block';
-window.addEventListener('appinstalled', () => {
-actionBtn.textContent = 'Open';
-title.textContent = 'Open the App';
-});
-if (deferredPrompt === null) {
+if (isInstalled) {
 actionBtn.textContent = 'Open';
 title.textContent = 'Open the App';
 }
