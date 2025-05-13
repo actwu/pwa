@@ -1,63 +1,47 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>One-File PWA</title>
+  <title>Simple PWA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#3367D6">
-
-  <!-- Linked manifest -->
   <link rel="manifest" href="manifest.json">
-
   <style>
     body { font-family: sans-serif; text-align: center; padding: 2em; }
-    #installBtn { padding: 0.8em 1.2em; font-size: 1em; display: none; }
+    #installBtn { padding: 1em 2em; font-size: 1rem; display: none; background: #3367D6; color: white; border: none; border-radius: 6px; }
     #installedMsg { display: none; color: green; font-size: 1.2em; }
   </style>
 </head>
 <body>
   <h1 id="title">Welcome to My PWA</h1>
   <button id="installBtn">Install This App</button>
-  <p id="installedMsg">This app is installed!</p>
+  <p id="installedMsg">App is installed!</p>
 
   <script>
     let deferredPrompt;
 
-    // Show install button if available
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
       document.getElementById('installBtn').style.display = 'inline-block';
     });
 
-    // Handle install button click
     document.getElementById('installBtn').addEventListener('click', async () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          console.log('PWA installed');
+        const result = await deferredPrompt.userChoice;
+        if (result.outcome === 'accepted') {
+          document.getElementById('installBtn').style.display = 'none';
+          document.getElementById('installedMsg').style.display = 'block';
         }
         deferredPrompt = null;
       }
     });
 
-    // Detect if it's running as an installed app
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    if (isStandalone) {
+    // Detect if app is running in standalone mode
+    if (window.matchMedia('(display-mode: standalone)').matches) {
       document.getElementById('title').innerText = 'Welcome Back!';
       document.getElementById('installedMsg').style.display = 'block';
-    }
-
-    // Register minimal service worker
-    if ('serviceWorker' in navigator) {
-      const swCode = \`
-        self.addEventListener('fetch', () => {});
-      \`;
-      const blob = new Blob([swCode], { type: 'application/javascript' });
-      const swUrl = URL.createObjectURL(blob);
-      navigator.serviceWorker.register(swUrl);
     }
   </script>
 </body>
