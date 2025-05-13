@@ -22,28 +22,14 @@ border-radius: 6px;
 margin-top: 1em;
 cursor: pointer;
 }
-install, main {
-display: none;
-}
 </style>
 </head>
 <body>
-<install>
-<h1 id="install-title">Install This App</h1>
-<button id="action-btn">Install</button>
-</install>
-<main>
-<h1>You’re Inside the App</h1>
-<p>This is the standalone mode.</p>
-</main>
 <script>
 let deferredPrompt;
-const installEl = document.querySelector('install');
-const mainEl = document.querySelector('main');
-const actionBtn = document.getElementById('action-btn');
-const title = document.getElementById('install-title');
+const body = document.body;
 const openApp = () => {
-window.location.href = '/';
+window.location.href = '/'; // Open the app (this should match your start URL)
 };
 const handleInstall = () => {
 if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
@@ -55,6 +41,17 @@ deferredPrompt.prompt();
 deferredPrompt = null;
 }
 };
+const installEl = document.createElement('div');
+const mainEl = document.createElement('div');
+const actionBtn = document.createElement('button');
+const title = document.createElement('h1');
+actionBtn.textContent = 'Install';
+title.textContent = 'Install This App';
+installEl.appendChild(title);
+installEl.appendChild(actionBtn);
+body.appendChild(installEl);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+const isInstalled = localStorage.getItem('pwaInstalled') === 'true';
 actionBtn.addEventListener('click', handleInstall);
 window.addEventListener('beforeinstallprompt', (e) => {
 e.preventDefault();
@@ -66,11 +63,16 @@ localStorage.setItem('pwaInstalled', 'true');
 actionBtn.textContent = 'Open';
 title.textContent = 'Open the App';
 });
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-const isInstalled = localStorage.getItem('pwaInstalled') === 'true';
 if (isStandalone) {
 installEl.style.display = 'none';
 mainEl.style.display = 'block';
+const mainTitle = document.createElement('h1');
+const mainMessage = document.createElement('p');
+mainTitle.textContent = "You’re Inside the App";
+mainMessage.textContent = "This is the standalone mode.";
+mainEl.appendChild(mainTitle);
+mainEl.appendChild(mainMessage);
+body.appendChild(mainEl);
 } else {
 installEl.style.display = 'block';
 if (isInstalled) {
