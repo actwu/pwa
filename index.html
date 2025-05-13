@@ -31,7 +31,7 @@
         deferredPrompt.prompt();
         const result = await deferredPrompt.userChoice;
         if (result.outcome === 'accepted') {
-          document.getElementById('installBtn').style.display = 'none';
+          
           document.getElementById('installedMsg').style.display = 'block';
         }
         deferredPrompt = null;
